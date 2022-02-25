@@ -1,0 +1,84 @@
+name: configuration-centos7
+description: CentOS7 configuration
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: Refresh_yum
+        action: ExecuteBash
+        inputs:
+          commands:
+            - rpmkeys --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+            - yum clean all && yum update -y
+      - name: Install_required
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum install -y git zip unzip xml-common yum-utils
+      - name: L07
+        action: ExecuteBash
+        inputs:
+          commands:
+            - setenforce 1
+            - sed -i 's/SELINUX=permissive/SELINUX=enforcing/g' /etc/selinux/config
+            - sed -i 's/SELINUX=disabled/SELINUX=enforcing/g' /etc/selinux/config
+      - name: L09
+        action: ExecuteBash
+        inputs:
+          commands:
+            - setsebool -P httpd_can_network_connect_db on
+      - name: L10
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'This is a restricted system.' >> /etc/motd
+      - name: L11
+        action: ExecuteBash
+        inputs:
+          commands:
+            - systemctl enable chronyd
+      - name: L12
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum remove gdm -y
+            - yum remove xorg-x11-server*
+      - name: L13
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum remove ftp lftp tftp -y
+      - name: L14
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum remove openldap-servers -y
+      - name: L15
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum remove postfix qmail exim -y
+      - name: L16
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum remove samba -y
+      - name: L17
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum remove telnet* -y
+      - name: L18
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum remove bind -y
+      - name: L24
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'PermitRootLogin no' >> /etc/ssh/sshd_config
+            - echo 'PasswordAuthentication no' >> /etc/ssh/sshd_config
+            - echo 'Port 2002' >> /etc/ssh/sshd_config
+            - semanage port -a -t ssh_port_t -p tcp 2002

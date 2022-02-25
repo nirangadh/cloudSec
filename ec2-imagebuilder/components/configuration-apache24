@@ -1,0 +1,66 @@
+name: configuration-apache24
+description: Custom configuration for PHP/Laravel deployments.
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: A01
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum clean all && yum update -y httpd
+      - name: Apache_configuration
+        action: ExecuteBash
+        inputs:
+          commands:
+            - sed -E -i -e 's/DirectoryIndex (.*)$/DirectoryIndex index.php \1/g' /etc/httpd/conf/httpd.conf
+            - echo "ServerName localhost" >> /etc/httpd/conf/httpd.conf
+      - name: A12
+        action: ExecuteBash
+        inputs:
+          commands:
+            - usermod apache -s /sbin/nologin
+      - name: A13
+        action: ExecuteBash
+        inputs:
+          commands:
+            - passwd -l apache
+      - name: A15
+        action: ExecuteBash
+        inputs:
+          commands:
+            - chown -R apache /var/www/html
+            - chgrp -R apache /var/www/html
+      - name: A16
+        action: ExecuteBash
+        inputs:
+          commands:
+            - chmod -R o-w /var/www/html
+      - name: A17
+        action: ExecuteBash
+        inputs:
+          commands:
+            - chmod -R o-w /var/www/html
+      - name: A39
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo "ServerTokens ProductOnly" >> /etc/httpd/conf.d/custom.conf
+      - name: A40
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo "ServerSignature Off" >> /etc/httpd/conf.d/custom.conf
+      - name: A42
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo "Timeout 10" >> /etc/httpd/conf.d/custom.conf
+      - name: A43
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo "KeepAlive on" >> /etc/httpd/conf.d/custom.conf
+            - echo "MaxKeepAliveRequests 100" >> /etc/httpd/conf.d/custom.conf
+            - echo "KeepAliveTimeout 15" >> /etc/httpd/conf.d/custom.conf

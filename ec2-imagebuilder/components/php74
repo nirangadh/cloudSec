@@ -1,0 +1,26 @@
+name: php74
+description: Installs PHP 7.4 from Remi's RPM repository. Requires yum-utils.
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: Setup_EPEL
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum install -y epel-release && rpmkeys --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+            - yum update -y epel-release
+      - name: Setup_Remi
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm && rpmkeys --import file:///etc/pki/rpm-gpg/RPM-GPG-KEY-remi
+            - yum-config-manager --enable remi remi-php74
+      - name: Install_php74
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum install -y php php-common php-cli
+            - yum install -y php-mcrypt php-curl php-pdo php-mysqlnd php-process php-bcmath php-gd php-json php-mbstring php-zip php-imap php-intl php-xml php-xmlrpc php-pecl-mcrypt php-pecl-redis
+            - sed -e "s~;date.timezone =~date.timezone = \"UTC\"~g" -i /etc/php.ini

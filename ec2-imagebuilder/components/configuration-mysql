@@ -1,0 +1,50 @@
+name: configuration-mysql
+description: Custom configuration for MySQL (MariaDB)
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: M03
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'export MYSQL_HISTFILE=/dev/null' >> /etc/profile.d/custom_environment.sh
+      - name: M04
+        action: ExecuteBash
+        inputs:
+          commands:
+            - usermod mysql -s /sbin/nologin
+      - name: M07
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum update -y MariaDB-server MariaDB-client
+      - name: M10
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo '[mysqld]' >> /etc/my.cnf.d/custom.cnf
+            - echo 'local_infile=0' >> /etc/my.cnf.d/custom.cnf
+      - name: M12
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'skip_symbolic_links=1' >> /etc/my.cnf.d/custom.cnf
+      - name: M12
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'sql_mode=STRICT_ALL_TABLES,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' >> /etc/my.cnf.d/custom.cnf
+      - name: M20
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'log_error=/var/log/mysql/mariadb.err' >> /etc/my.cnf.d/custom.cnf
+            - echo 'log_warnings=3' >> /etc/my.cnf.d/custom.cnf
+      - name: M22
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo '[mariadb]' >> /etc/my.cnf.d/custom-mariadb.cnf
+            - echo 'plugin_load_add = server_audit' >> /etc/my.cnf.d/custom-mariadb.cnf

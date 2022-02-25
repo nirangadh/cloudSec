@@ -1,0 +1,90 @@
+name: configuration-php74
+description: Custom configuration for PHP 7.4.x
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: P02
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'expose_php = Off' >> /etc/php.d/99-custom.ini
+      - name: P03
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'error_reporting = E_ALL' >> /etc/php.d/99-custom.ini
+      - name: P04
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'display_errors = Off' >> /etc/php.d/99-custom.ini
+            - echo 'display_startup_errors = Off' >> /etc/php.d/99-custom.ini
+      - name: P05
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'log_errors = On' >> /etc/php.d/99-custom.ini
+            - echo 'error_log = /var/log/php_error.log' >> /etc/php.d/99-custom.ini
+      - name: P06
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'ignore_repeated_errors = Off' >> /etc/php.d/99-custom.ini
+            - echo 'ignore_repeated_source = Off' >> /etc/php.d/99-custom.ini
+      - name: P07
+        action: ExecuteBash
+        inputs:
+          commands:
+            - mkdir -p /tmp/php_session && chown apache. /tmp/php_session
+            - echo 'session.save_path = /tmp/php_session/' >> /etc/php.d/99-custom.ini
+      - name: P08
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'session.gc_maxlifetime = 1440' >> /etc/php.d/99-custom.ini
+      - name: P09
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'open_basedir = /var/www/' >> /etc/php.d/99-custom.ini
+      - name: P10
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'allow_url_fopen = 0' >> /etc/php.d/99-custom.ini
+      - name: P11
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'variables_order = "GPCS"' >> /etc/php.d/99-custom.ini
+      - name: P12
+        action: ExecuteBash
+        inputs:
+          commands:
+            - mkdir -p /var/tmp/uploads && chown apache. /var/tmp/uploads
+            - echo 'upload_tmp_dir=/var/tmp/uploads' >> /etc/php.d/99-custom.ini
+            - echo 'upload_max_filesize=2M' >> /etc/php.d/99-custom.ini
+            - echo 'max_file_uploads=2' >> /etc/php.d/99-custom.ini
+      - name: P13
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'enable_dl = Off' >> /etc/php.d/99-custom.ini
+      - name: P14
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'disable_functions = system, exec, shell_exec, passthru, phpinfo, show_source, highlight_file, popen, proc_open, fopen_with_path, dbmopen, dbase_open, putenv, move_uploaded_file, chdir, mkdir, rmdir, chmod, rename, filepro, filepro_rowcount, filepro_retrieve, posix_mkfifo' >> /etc/php.d/99-custom.ini
+      - name: P16
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'memory_limit = 256M' >> /etc/php.d/99-custom.ini
+            - echo 'max_execution_time = 120' >> /etc/php.d/99-custom.ini
+      - name: P17
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo 'post_max_size = 24M' >> /etc/php.d/99-custom.ini

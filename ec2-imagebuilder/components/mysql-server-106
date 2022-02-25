@@ -1,0 +1,39 @@
+name: mysql-server-106
+description: Installs MySQL (MariaDB) 10.6.x
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: Configure_upstream
+        action: ExecuteBash
+        inputs:
+          commands:
+            - curl -LsS -O https://downloads.mariadb.com/MariaDB/mariadb_repo_setup && bash mariadb_repo_setup --mariadb-server-version=10.6
+      - name: Install_mysql
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum install -y MariaDB-server MariaDB-client
+
+  - name: validate
+    steps:
+      - name: Enable_mysql
+        action: ExecuteBash
+        inputs:
+          commands:
+            - systemctl enable mariadb
+
+  - name: test
+    steps:
+      - name: Start_mysql
+        action: ExecuteBash
+        inputs:
+          commands:
+            - systemctl start mariadb
+      - name: Stop_mysql
+        action: ExecuteBash
+        inputs:
+          commands:
+            - sleep 15
+            - systemctl stop mariadb

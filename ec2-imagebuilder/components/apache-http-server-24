@@ -1,0 +1,33 @@
+name: apache-http-server-24
+description: Installs Apache from system upstream
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: Install_httpd
+        action: ExecuteBash
+        inputs:
+          commands:
+            - yum install -y httpd httpd-tools
+
+  - name: validate
+    steps:
+      - name: Enable_httpd
+        action: ExecuteBash
+        inputs:
+          commands:
+            - systemctl enable httpd
+
+  - name: test
+    steps:
+      - name: Start_httpd
+        action: ExecuteBash
+        inputs:
+          commands:
+            - systemctl start httpd
+      - name: Stop_httpd
+        action: ExecuteBash
+        inputs:
+          commands:
+            - systemctl stop httpd
